@@ -5,8 +5,9 @@ from typing import List
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-from haystack.database.base import Document, BaseDocumentStore
-from haystack.database.elasticsearch import ElasticsearchDocumentStore
+from haystack.document_store.base import BaseDocumentStore
+from haystack import Document
+from haystack.document_store.elasticsearch import ElasticsearchDocumentStore
 from haystack.retriever.base import BaseRetriever
 from collections import namedtuple
 
@@ -22,29 +23,31 @@ class ElasticsearchRetriever(BaseRetriever):
                              Optionally, ES `filter` clause can be added where the values of `terms` are placeholders
                              that get substituted during runtime. The placeholder(${filter_name_1}, ${filter_name_2}..)
                              names must match with the filters dict supplied in self.retrieve().
+                             ::
 
-                             An example custom_query:
-                            {
-                                "size": 10,
-                                "query": {
-                                    "bool": {
-                                        "should": [{"multi_match": {
-                                            "query": "${question}",                 // mandatory $question placeholder
-                                            "type": "most_fields",
-                                            "fields": ["text", "title"]}}],
-                                        "filter": [                                 // optional custom filters
-                                            {"terms": {"year": "${years}"}},
-                                            {"terms": {"quarter": "${quarters}"}},
-                                            {"range": {"date": {"gte": "${date}"}}}
-                                            ],
+                                 An example custom_query:
+                                 {
+                                    "size": 10,
+                                    "query": {
+                                        "bool": {
+                                            "should": [{"multi_match": {
+                                                "query": "${question}",                 // mandatory $question placeholder
+                                                "type": "most_fields",
+                                                "fields": ["text", "title"]}}],
+                                            "filter": [                                 // optional custom filters
+                                                {"terms": {"year": "${years}"}},
+                                                {"terms": {"quarter": "${quarters}"}},
+                                                {"range": {"date": {"gte": "${date}"}}}
+                                                ],
 
-                                    }
-                                },
-                            }
+                                        }
+                                    },
+                                 }
 
                              For this custom_query, a sample retrieve() could be:
-                             self.retrieve(query="Why did the revenue increase?",
-                                           filters={"years": ["2019"], "quarters": ["Q1", "Q2"]})
+                             ::
+                                 self.retrieve(query="Why did the revenue increase?",
+                                               filters={"years": ["2019"], "quarters": ["Q1", "Q2"]})
         """
         self.document_store: ElasticsearchDocumentStore = document_store
         self.custom_query = custom_query
@@ -164,6 +167,12 @@ class TfidfRetriever(BaseRetriever):
         return documents
 
     def fit(self):
+        if not self.paragraphs or len(self.paragraphs) == 0:
+            self.paragraphs = self._get_all_paragraphs()
+            if not self.paragraphs or len(self.paragraphs) == 0:
+                logger.warning("Fit method called with empty document store")
+                return
+
         self.df = pd.DataFrame.from_dict(self.paragraphs)
         self.df["text"] = self.df["text"].apply(lambda x: " ".join(x))
         self.tfidf_matrix = self.vectorizer.fit_transform(self.df["text"])

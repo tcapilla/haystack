@@ -1,6 +1,7 @@
-*******************************************************
-Haystack — Neural Question Answering At Scale
-*******************************************************
+.. image:: https://github.com/deepset-ai/haystack/blob/master/docs/_src/img/haystack_logo_blue_banner.png?raw=true
+    :align: center
+    :alt: Haystack Logo
+
 .. image:: https://github.com/deepset-ai/haystack/workflows/Build/badge.svg?branch=master
 	:target: https://github.com/deepset-ai/haystack/actions
 	:alt: Build
@@ -46,7 +47,7 @@ Core Features
 Components
 ==========
 
-.. image:: https://raw.githubusercontent.com/deepset-ai/haystack/master/docs/img/sketched_concepts_white.png
+.. image:: https://raw.githubusercontent.com/deepset-ai/haystack/master/docs/_src/img/sketched_concepts_white.png
 
 
 1. **DocumentStore**: Database storing the documents for our search. We recommend Elasticsearch, but have also more light-weight options for fast prototyping (SQL or In-Memory).
@@ -64,6 +65,12 @@ Components
 
 Resources
 =========
+
+**Documentation:** https://haystack.deepset.ai   
+
+**Roadmap**: https://haystack.deepset.ai/en/docs/roadmapmd
+
+**Tutorials**
 
 - Tutorial 1  - Basic QA Pipeline: `Jupyter notebook  <https://github.com/deepset-ai/haystack/blob/master/tutorials/Tutorial1_Basic_QA_Pipeline.ipynb>`__  or `Colab <https://colab.research.google.com/github/deepset-ai/haystack/blob/master/tutorials/Tutorial1_Basic_QA_Pipeline.ipynb>`_
 - Tutorial 2  - Fine-tuning a model on own data: `Jupyter notebook <https://github.com/deepset-ai/haystack/blob/master/tutorials/Tutorial2_Finetune_a_model_on_your_data.ipynb>`__ or `Colab <https://colab.research.google.com/github/deepset-ai/haystack/blob/master/tutorials/Tutorial2_Finetune_a_model_on_your_data.ipynb>`__
@@ -91,9 +98,11 @@ Master branch (if you wanna try the latest features)::
 
 To update your installation, just do a git pull. The --editable flag will update changes immediately.
 
+Note: On Windows you might need :code:`pip install farm-haystack -f https://download.pytorch.org/whl/torch_stable.html` to install PyTorch correctly
+
 Usage
 -----
-.. image:: https://raw.githubusercontent.com/deepset-ai/haystack/master/docs/img/code_snippet_usage.png
+.. image:: https://raw.githubusercontent.com/deepset-ai/haystack/master/docs/_src/img/code_snippet_usage.png
 
 
 Quick Tour
@@ -248,20 +257,20 @@ A simple REST API based on `FastAPI <https://fastapi.tiangolo.com/>`_ is provide
 
 To serve the API, adjust the values in :code:`rest_api/config.py` and run::
 
-    gunicorn rest_api.application:app -b 0.0.0.0:80 -k uvicorn.workers.UvicornWorker
+    gunicorn rest_api.application:app -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker -t 300
 
-You will find the Swagger API documentation at http://127.0.0.1:80/docs
+You will find the Swagger API documentation at http://127.0.0.1:8000/docs
 
 
 6. Labeling Tool
 ---------------------
-* Use the `hosted version <https://annotate.deepset.ai/login>`_  (Beta) or deploy it yourself via Docker images (coming soon)
+* Use the `hosted version <https://annotate.deepset.ai/login>`_ (Beta) or deploy it yourself with the `Docker Images <https://github.com/deepset-ai/haystack/blob/master/annotation_tool>`_.
 * Create labels with different techniques: Come up with questions (+ answers) while reading passages (SQuAD style) or have a set of predefined questions and look for answers in the document (~ Natural Questions).
 * Structure your work via organizations, projects, users
 * Upload your documents or import labels from an existing SQuAD-style dataset
 * Coming soon: more file formats for document upload, metrics for label quality ...
 
-.. image:: https://raw.githubusercontent.com/deepset-ai/haystack/master/docs/img/annotation_tool.png
+.. image:: https://raw.githubusercontent.com/deepset-ai/haystack/master/docs/_src/img/annotation_tool.png
 
 
 7. Indexing PDF / Docx files
